@@ -1,12 +1,17 @@
 import { Injectable } from '@angular/core';
 import { SpotifyConfiguration } from 'src/environments/environment';
+import  Spotify  from 'spotify-web-api-js';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SpotifyService {
 
-  constructor() { }
+  spotifyApi: Spotify.SpotifyWebApiJs = null;
+
+  constructor() {
+    this.spotifyApi = new Spotify();
+   }
 
   getUrlLogin() {
     const authEndpoint = `${SpotifyConfiguration.authEndpoint}?`;
@@ -25,5 +30,11 @@ export class SpotifyService {
     const params = window.location.hash.substring(1).split('&'); // comeca a string a partir de do segundo elemento do array e quebra quando encontrar o &
 
     return params[0].split('=')[1]; //pegando o lado direito do igual, conteudo hash
+  }
+
+  defineAccessToken(token: string){
+    this.spotifyApi.setAccessToken(token);
+    localStorage.setItem('token', token);
+    this.spotifyApi.skipToNext();
   }
 }
